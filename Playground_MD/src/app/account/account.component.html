@@ -1,6 +1,6 @@
 <div class="form-details">
     <mat-card appearance="outlined">
-        <form action="" [formGroup]="userForm">
+        <form action="" [formGroup]="userForm" (ngSubmit)="onSubmit()">
             <!-- Name -->
             <div class="form-input">
                 <label>Name : </label>
@@ -75,8 +75,18 @@
                 </mat-form-field>
             </div>
 
+            <!-- Percentage -->
+            <div class="form-input">
+                <label>Percentage: </label>
+                <label>{{slider.value}}</label>
+            </div>
+            <mat-slider max="100" min="0" step="1" formControlName="percentage">
+                <input matSliderThumb #slider>
+                {{ userForm.get('percentage')?.value }}
+            </mat-slider>
+
             <!-- Skill set -->
-            <!-- <div class="form-input">
+            <div class="form-input">
                 <label>Skills : </label>
                 <mat-form-field class="form-input">
                     <mat-label>Skill Set</mat-label>
@@ -94,8 +104,7 @@
                             (matChipInputTokenEnd)="add($event)" />
                     </mat-chip-grid>
                 </mat-form-field>
-                
-            </div> -->
+            </div>
 
             <!-- Internship -->
             <div class="form-checkbox">
@@ -104,7 +113,7 @@
                 </mat-checkbox>
             </div>
 
-            <button mat-fab extended>Basic</button>
+            <button mat-fab extended>Submit</button>
 
         </form>
 
