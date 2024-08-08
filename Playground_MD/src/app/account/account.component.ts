@@ -1,5 +1,5 @@
 import { Component, Inject, model } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, FormGroupDirective, FormsModule, NgForm, ReactiveFormsModule, Validators } from '@angular/forms';
+import { AbstractControl, FormBuilder, FormControl, FormGroup, FormGroupDirective, FormsModule, NgForm, ReactiveFormsModule, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { ErrorStateMatcher, provideNativeDateAdapter } from '@angular/material/core';
 import { MatDateFnsModule } from '@angular/material-date-fns-adapter';
 import { LiveAnnouncer } from '@angular/cdk/a11y';
@@ -17,6 +17,9 @@ import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatSliderModule } from '@angular/material/slider';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { PopupComponent } from '../popup/popup.component';
+import { InternshipData } from '../modals/InternshipData';
 
 /** Error when invalid control is dirty, touched, or submitted. */
 export class MyErrorStateMatcher implements ErrorStateMatcher {
@@ -34,8 +37,8 @@ export interface Skill {
   selector: 'app-account',
   standalone: true,
   imports: [FormsModule, ReactiveFormsModule, MatInputModule, CommonModule, MatButtonModule,
-    MatFormFieldModule, MatRadioModule, MatDatepickerModule, MatCardModule, MatDateFnsModule,
-    MatCheckboxModule, MatSelectModule, MatChipsModule, MatIconModule, MatSliderModule, MatAutocompleteModule],
+    MatFormFieldModule, MatRadioModule, MatDatepickerModule, MatCardModule, MatDateFnsModule, MatDialogModule,
+    MatCheckboxModule, MatSelectModule, MatChipsModule, MatIconModule, MatSliderModule, MatAutocompleteModule, PopupComponent],
   providers: [provideNativeDateAdapter()],
   templateUrl: './account.component.html',
   styleUrl: './account.component.scss'
@@ -46,12 +49,13 @@ export class AccountComponent {
   currentSkill = new FormControl('');
   separatorKeysCodes: number[] = [ENTER, COMMA];
   readonly addOnBlur = true;
-  skills: Skill[] = [{ name: 'JavaScript' }, { name: 'Angular' }, { name: 'TypeScript' }];
+  skills: Skill[] = [{ name: 'JavaScript' }, { name: 'Angular' }];
+  internshipDetails!: InternshipData;
 
-  constructor(private formbuilder: FormBuilder, private announcer: LiveAnnouncer) {
+  constructor(private formbuilder: FormBuilder, private announcer: LiveAnnouncer, private dialog: MatDialog) {
     this.userForm = this.formbuilder.group({
       name: ['', Validators.required],
-      email: ['', [Validators.required, Validators.email]],
+      email: ['', [Validators.required, Validators.email, this.emailDomainValidator('cdsgroups.com')]],
       dob: ['', Validators.required],
       gender: ['', Validators.required],
       isUndergraduate: [false],
@@ -61,8 +65,6 @@ export class AccountComponent {
       hasInternship: [false]
     });
 
-    // custom functions for validations
-
     this.userForm.get('isUndergraduate')?.valueChanges.subscribe((value) => {
       if (value) {
         this.userForm.get('branch')?.enable();
@@ -70,6 +72,18 @@ export class AccountComponent {
         this.userForm.get('branch')?.disable();
       }
     });
+  }
+  
+  // custom functions for validations
+  emailDomainValidator(domain: string): ValidatorFn {
+    return (control: AbstractControl): ValidationErrors | null => {
+      const email = control.value as string;
+      if (!email) {
+        return null;
+      }
+      const isValid = email.endsWith(`@${domain}`);
+      return isValid ? null : { invalidDomain: true };
+    };
   }
 
   add(event: MatChipInputEvent): void {
@@ -99,8 +113,27 @@ export class AccountComponent {
   trackBySkill(index: number, skill: Skill): string {
     return skill.name;
   }
+  
+  openDialog(event: any) {
+      if (event.checked) {
+        const dialogRef = this.dialog.open(PopupComponent, {
+          width: '500px',
+        });
+  
+        dialogRef.afterClosed().subscribe((result) => {
+          if (result) {
+            this.internshipDetails = result;
+          } 
+          else {
+            this.userForm.patchValue({ hasInternship: false });
+          }
+        });        
+      }
+    }
 
   onSubmit(): void {
     this.submitted = true;
   }
+
+
 }

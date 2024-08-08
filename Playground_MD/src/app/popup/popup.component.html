@@ -1,0 +1,45 @@
+<h4 mat-dialog-title>Internship details:</h4>
+<form [formGroup]="internshipData">
+    <mat-dialog-content>
+        
+        <!-- Company name -->
+        <div class="internship-input">
+            <label>Company : </label>
+            <mat-form-field>
+                <mat-label>Company Name</mat-label>
+                <input matInput formControlName="company" placeholder="Ex: Google">
+                <mat-error *ngIf="internshipData.get('company')?.hasError('required') && isInternshipDataSubmitted">
+                    Company name is required
+                </mat-error>
+            </mat-form-field>
+        </div>
+
+        <!-- Role -->
+        <div class="internship-input">
+            <label>Role : </label>
+            <mat-form-field>
+                <mat-label>Role</mat-label>
+                <input matInput formControlName="role" placeholder="Ex: Full Stack Developer">
+                <mat-error *ngIf="internshipData.get('role')?.hasError('required') && isInternshipDataSubmitted">
+                    Role is required
+                </mat-error>
+            </mat-form-field>
+        </div>
+
+        <!-- description about tools, technologies used -->
+        <div class="internship-input">
+            <label>Name : </label>
+            <mat-form-field>
+                <mat-label>Description</mat-label>
+                <textarea matInput formControlName="description" placeholder="tools, technology"></textarea>
+                <mat-error *ngIf="internshipData.get('description')?.hasError('required') && isInternshipDataSubmitted">
+                    Description is required
+                </mat-error>
+            </mat-form-field>
+        </div>
+    </mat-dialog-content>
+    <mat-dialog-actions>
+        <button mat-button [mat-dialog-close]>Cancel</button>
+        <button mat-button (click)="onSave()">Save</button>
+    </mat-dialog-actions>
+</form>
