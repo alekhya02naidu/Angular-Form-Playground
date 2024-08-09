@@ -81,11 +81,10 @@
             <!-- Percentage -->
             <div class="form-input">
                 <label>Percentage: </label>
-                <label>{{slider.value}}</label>
+                <label>{{ userForm.get('percentage')?.value }}</label>
             </div>
-            <mat-slider max="100" min="0" step="1" formControlName="percentage">
-                <input matSliderThumb #slider>
-                {{ userForm.get('percentage')?.value }}
+            <mat-slider max="100" min="0" step="1" ngDefaultControl formControlName="percentage">
+                <input matSliderThumb>
             </mat-slider>
 
             <!-- Skill set -->

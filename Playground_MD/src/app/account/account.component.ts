@@ -60,7 +60,7 @@ export class AccountComponent {
       gender: ['', Validators.required],
       isUndergraduate: [false],
       branch: [{ value: '', disabled: true }],
-      percentage: ['',Validators.required],
+      percentage: [0, Validators.required],
       skillSet: [[]],
       hasInternship: [false]
     });
@@ -134,6 +134,4 @@ export class AccountComponent {
   onSubmit(): void {
     this.submitted = true;
   }
-
-
 }
