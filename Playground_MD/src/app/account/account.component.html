@@ -68,7 +68,7 @@
                 <label>Branch : </label>
                 <mat-form-field appearance="fill" [ngClass]="{'disabled': !userForm.get('isUndergraduate')?.value}">
                     <mat-label>Branch: </mat-label>
-                    <mat-select formControlName="branch" [disabled]="!userForm.get('isUndergraduate')?.value">
+                    <mat-select formControlName="branch" >
                         <mat-option value="cse">CSE</mat-option>
                         <mat-option value="ece">ECE</mat-option>
                         <mat-option value="mech">Mech</mat-option>
